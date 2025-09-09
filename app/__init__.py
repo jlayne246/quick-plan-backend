@@ -31,7 +31,7 @@ def create_app():
             print("❌ Database connection failed:", e)
     
     # Config
-    app.config.from_object("app.config.Config")
+    #app.config.from_object("app.config.Config")
 
     # Enable CORS so Next.js frontend can talk to backend
     CORS(app)
