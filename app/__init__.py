@@ -20,7 +20,7 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
-    print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
+    # print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
     
     db.init_app(app)
     
