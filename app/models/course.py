@@ -10,13 +10,15 @@ class Course(db.Model):
     # backref to CourseOffering will be established via relationship in CourseOffering model
     offerings = db.relationship("CourseOffering", back_populates="course")
     credits = db.relationship("CourseCredits", back_populates="course")
+    mandatory_for_degrees = db.relationship("MandatoryCourses", back_populates="course")
 
     def to_dict(self):
         return {
             "course_code": self.course_code,
             "course_name": self.course_name,
             "programme_code": self.programme_code,
-            "credits": self.credits[0].credits if self.credits else None
+            "credits": self.credits[0].credits if self.credits else None,
+            "mandatory_for_degrees": [mc.degree_id for mc in self.mandatory_for_degrees]
         }
 
 class CourseCredits(db.Model):
@@ -56,4 +58,24 @@ class CourseOffering(db.Model):
             "course": self.course.to_dict() if self.course else None,
             "semester_code": self.semester_code,
             "lecturer": self.lecturer
+        }
+
+class MandatoryCourses(db.Model):
+    __tablename__ = "mandatory_courses"
+
+    id = db.Column(db.Integer, primary_key=True)
+    degree_id = db.Column(
+        db.Integer, db.ForeignKey("degrees.id"), nullable=False
+    )
+    course_code = db.Column(
+        db.String(20), db.ForeignKey("courses.course_code"), nullable=False
+    )
+    
+    course = db.relationship("Course", back_populates="mandatory_for_degrees")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "degree_id": self.degree_id,
+            "course_code": self.course_code
         }

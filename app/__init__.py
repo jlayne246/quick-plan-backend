@@ -9,6 +9,8 @@ from sqlalchemy import text
 from app.extensions import db
 
 from app.routes.semester_routes import semester_bp
+from app.routes.degree_routes import degree_bp
+from app.routes.faculty_routes import faculty_bp
 
 def create_app():
     load_dotenv()  # Load environment variables from .env file
@@ -42,5 +44,7 @@ def create_app():
     # Register blueprints (API routes)
     # Register blueprints
     app.register_blueprint(semester_bp, url_prefix="/api")
-    
+    app.register_blueprint(degree_bp, url_prefix="/api")
+    app.register_blueprint(faculty_bp, url_prefix="/api")
+
     return app
