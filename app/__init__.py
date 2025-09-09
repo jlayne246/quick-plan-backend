@@ -32,6 +32,7 @@ def create_app():
     
     # Config
     #app.config.from_object("app.config.Config")
+    print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
 
     # Enable CORS so Next.js frontend can talk to backend
     CORS(app)
