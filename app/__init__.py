@@ -20,6 +20,8 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
+    print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
+    
     db.init_app(app)
     
     # ✅ Test DB connection on startup
@@ -32,7 +34,7 @@ def create_app():
     
     # Config
     #app.config.from_object("app.config.Config")
-    print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
+    
 
     # Enable CORS so Next.js frontend can talk to backend
     CORS(app)
