@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from sqlalchemy import text
 
+from app.status import status_bp  # import your modular status routes
+
 from app.extensions import db
 
 from app.routes.semester_routes import semester_bp
@@ -20,9 +22,18 @@ def create_app():
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     
+    app.register_blueprint(status_bp)  # registers /status route
+    app.register_blueprint(semester_bp, url_prefix="/api")
+    app.register_blueprint(degree_bp, url_prefix="/api")
+    app.register_blueprint(faculty_bp, url_prefix="/api")
+    
     # print("DB URI in config:", app.config.get("SQLALCHEMY_DATABASE_URI"))
     
     db.init_app(app)
+    
+    with app.app_context():
+        from app.framework.cache_warmer import warm_degrees_cache
+        warm_degrees_cache()
     
     # ✅ Test DB connection on startup
     with app.app_context():
@@ -43,11 +54,21 @@ def create_app():
     @app.route("/api/hello")
     def hello():
         return {"message": "Hello, World!"}
+    
+    @app.route("/")
+    def home():
+        return """
+                <html>
+                <head><title>Service Status</title></head>
+                <body style="font-family:sans-serif; text-align:center; padding-top:3em;">
+                    <h1>✅ Flask Backend Running</h1>
+                    <p>See <a href='/status'>/status</a> for full system report.</p>
+                </body>
+                </html>
+            """
 
     # Register blueprints (API routes)
     # Register blueprints
-    app.register_blueprint(semester_bp, url_prefix="/api")
-    app.register_blueprint(degree_bp, url_prefix="/api")
-    app.register_blueprint(faculty_bp, url_prefix="/api")
+    
 
     return app

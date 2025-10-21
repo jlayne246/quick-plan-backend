@@ -4,3 +4,6 @@ gunicorn
 flask-sqlalchemy
 python-dotenv
 psycopg2
+requests
+redis
+psutil

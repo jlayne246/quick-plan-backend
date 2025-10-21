@@ -1,11 +1,13 @@
 from flask import jsonify
 from app.services import semester_service
 import app.services.degree_service as degree_service
+from app.framework.cache import cache_function
 
 def get_degrees():
     try:
-        degrees = degree_service.get_degrees()
-        return jsonify({"success": True, "data": degrees}), 200
+        data, source = cache_function("degrees:list", degree_service.get_degrees)
+        print("Degrees fetched from:", source);
+        return jsonify({"success": True, "data": data}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
     
